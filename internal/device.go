@@ -27,5 +27,10 @@ func SetupDevice() (*water.Interface, error) {
 		log.Fatal(err)
 	}
 
+	cmd = exec.Command("sudo", "ip", "route", "add", "8.8.8.8", "dev", name)
+	if err := cmd.Run(); err != nil {
+		log.Fatal(err)
+	}
+
 	return ifce, nil
 }
