@@ -7,7 +7,7 @@ import (
 	"github.com/songgao/water"
 )
 
-func SetupDevice(*water.Interface, error) {
+func SetupDevice() (*water.Interface, error) {
 	ifce, err := water.New(water.Config{
 		DeviceType: water.TUN,
 	})
