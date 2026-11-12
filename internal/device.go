@@ -17,7 +17,7 @@ func SetupDevice(*water.Interface, error) {
 
 	name := ifce.Name()
 
-	cmd := exec.Command("sudo", "ip", "addr", "10.0.0.1/24", "dev", name)
+	cmd := exec.Command("sudo", "ip", "addr", "add", "10.0.0.1/24", "dev", name)
 	if err := cmd.Run(); err != nil {
 		log.Fatal(err)
 	}
@@ -27,12 +27,5 @@ func SetupDevice(*water.Interface, error) {
 		log.Fatal(err)
 	}
 
-	packet := make([]byte, 2000)
-	for {
-		n, err := ifce.Read(packet)
-		if err != nil {
-			log.Fatal(err)
-		}
-		log.Printf("Packet Received: % x\n", packet[:n])
-	}
+	return ifce, nil
 }
