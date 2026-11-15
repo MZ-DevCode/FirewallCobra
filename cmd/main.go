@@ -10,4 +10,6 @@ func main() {
 	if err != nil {
 		log.Fatalf("Error setup TUN: %v", err)
 	}
+
+	log.Printf("TUN interface %s is running", ifce.Name())
 }
