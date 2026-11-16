@@ -56,6 +56,9 @@ func main() {
 
 		case 17:
 			protocol = "UDP"
+			srcPort = binary.BigEndian.Uint16(transportLayer[0:2])
+			dstPort = binary.BigEndian.Uint16(transportLayer[2:4])
+
 		}
 
 		fmt.Printf("[%s] src: %d:%d -> dst: %d:%d | ttl: %d | ihl: %d | len: %d\n",
