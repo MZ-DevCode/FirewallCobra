@@ -64,6 +64,12 @@ func main() {
 
 		}
 
+		srcIPInt := binary.BigEndian.Uint32(srcIP)
+
+		if blacklist[srcIPInt] {
+			continue
+		}
+
 		fmt.Printf("[%s] src: %d:%d -> dst: %d:%d | ttl: %d | ihl: %d | len: %d\n",
 			protocol, srcIP, srcPort, dstIP, dstPort, ttl, ihl, n)
 	}
