@@ -13,6 +13,9 @@ func main() {
 		log.Fatalf("Error setup TUN: %v", err)
 	}
 
+	blacklist := internal.ReadBlacklist("blacklist.txt")
+	log.Print("Loaded nlacklist succesfully")
+
 	log.Printf("TUN interface %s is running", ifce.Name())
 
 	packet := make([]byte, 1500)
