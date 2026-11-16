@@ -1,10 +1,10 @@
 package main
 
 import (
+	"encoding/binary"
 	"firewallcobra/internal"
 	"fmt"
 	"log"
-	"net"
 )
 
 func main() {
@@ -33,25 +33,32 @@ func main() {
 			continue
 		}
 
-		ihl := packet[0] & 0x0F
+		ihl := int(packet[0]&0x0F) * 4
 		ttl := packet[8]
 		protocolCode := packet[9]
 
-		srcIP := net.IPv4(packet[12], packet[13], packet[14], packet[15])
-		dstIP := net.IPv4(packet[16], packet[17], packet[18], packet[19])
+		srcIP := packet[12:16]
+		dstIP := packet[16:20]
+
+		transportLayer := packet[ihl:]
 
 		var protocol string = "OTHER"
+		var srcPort uint16 = 0
+		var dstPort uint16 = 0
 
 		switch protocolCode {
 		case 1:
 			protocol = "ICMP"
 		case 6:
 			protocol = "TCP"
+			srcPort = binary.BigEndian.Uint16(transportLayer[0:2])
+			dstPort = binary.BigEndian.Uint16(transportLayer[2:4])
+
 		case 17:
 			protocol = "UDP"
 		}
 
-		fmt.Printf("[%s] src: %s -> dst: %s | ttl: %d | ihl: %d | len: %d\n",
-			protocol, srcIP, dstIP, ttl, ihl, n)
+		fmt.Printf("[%s] src: %d:%d -> dst: %d:%d | ttl: %d | ihl: %d | len: %d\n",
+			protocol, srcIP, srcPort, dstIP, dstPort, ttl, ihl, n)
 	}
 }
