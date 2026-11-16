@@ -7,10 +7,12 @@ import (
 	"os"
 )
 
-func ReadBlacklist(file string) {
-	file, err := os.Open("blacklist.txt")
+func ReadBlacklist(filename string) map[uint32]bool {
+	blacklist := make(map[uint32]bool)
+	file, err := os.Open(filename)
 	if err != nil {
 		fmt.Println(err)
+		return blacklist
 	}
 
 	defer file.Close()
