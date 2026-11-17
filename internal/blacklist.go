@@ -2,8 +2,9 @@ package internal
 
 import (
 	"bufio"
-	"bytes"
+	"encoding/binary"
 	"fmt"
+	"net"
 	"os"
 )
 
@@ -17,10 +18,21 @@ func ReadBlacklist(filename string) map[uint32]bool {
 
 	defer file.Close()
 
-	wr := bytes.Buffer{}
-	sc := bufio.NewScanner(file)
-	for sc.Scan() {
-		wr.WriteString(sc.Text())
+	scanner := bufio.NewScanner(file)
+	for scanner.Scan() {
+		line := scanner.Text()
+
+		ip := net.ParseIP(line)
+		if ip == nil {
+			fmt.Printf("Error: invalid IP format")
+			continue
+		}
+		ipv4 := ip.To4()
+		if ipv4 != nil {
+			ipInt := binary.BigEndian.Uint32(ipv4)
+			blacklist[ipInt] = true
+		}
+
 	}
-	fmt.Println(wr.String())
+	return blacklist
 }
