@@ -21,6 +21,8 @@ func main() {
 
 	packet := make([]byte, 1500)
 
+	var flagsStr string
+
 	for {
 		n, err := ifce.Read(packet)
 		if err != nil {
@@ -58,6 +60,26 @@ func main() {
 			srcPort = binary.BigEndian.Uint16(transportLayer[0:2])
 			dstPort = binary.BigEndian.Uint16(transportLayer[2:4])
 
+			tcpFlags := transportLayer[13]
+
+			isSYN := (tcpFlags & 0x02) != 0
+			isACK := (tcpFlags & 0x10) != 0
+			isFIN := (tcpFlags & 0x01) != 0
+			isRST := (tcpFlags & 0x04) != 0
+
+			if isSYN {
+				flagsStr = "SYN "
+			}
+			if isACK {
+				flagsStr = "ACK "
+			}
+			if isFIN {
+				flagsStr = "FIN "
+			}
+			if isRST {
+				flagsStr = "RST "
+			}
+
 		case 17:
 			protocol = "UDP"
 			srcPort = binary.BigEndian.Uint16(transportLayer[0:2])
@@ -73,7 +95,7 @@ func main() {
 			continue
 		}
 
-		fmt.Printf("[%s] src: %d:%d -> dst: %d:%d | ttl: %d | ihl: %d | len: %d\n",
-			protocol, srcIP, srcPort, dstIP, dstPort, ttl, ihl, n)
+		fmt.Printf("[%s] src: %d:%d -> dst: %d:%d | flags: %s | ttl: %d | ihl: %d | len: %d\n",
+			protocol, srcIP, srcPort, dstIP, dstPort, flagsStr, ttl, ihl, n)
 	}
 }
