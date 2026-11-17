@@ -5,6 +5,7 @@ import (
 	"firewallcobra/internal"
 	"fmt"
 	"log"
+	"net"
 )
 
 func main() {
@@ -67,6 +68,8 @@ func main() {
 		srcIPInt := binary.BigEndian.Uint32(srcIP)
 
 		if blacklist[srcIPInt] {
+			srcIPNet := net.IPv4(srcIP[0], srcIP[1], srcIP[2], srcIP[3])
+			fmt.Printf("[IP] blocked ip: %s\n", srcIPNet)
 			continue
 		}
 
