@@ -15,3 +15,8 @@ type ConntrackInfo struct {
 	Timestamp time.Time
 	Count     int
 }
+
+type Conntrack struct {
+	entries map[ConntrackKey]ConntrackInfo
+	timeout time.Duration
+}
