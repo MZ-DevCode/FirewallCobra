@@ -35,4 +35,18 @@ func (ct *Conntrack) Observe(SrcIP, DstIP uint32, SrcPort, DstPort uint16, proto
 		DstPort:  DstPort,
 		Protocol: protocol,
 	}
+
+	val, ok := ct.entries[key]
+	if !ok {
+		val = ConntrackInfo{
+			State: "SEEN",
+		}
+	}
+	val.Count++
+	val.Timestamp = time.Now()
+
+	ct.entries[key] = val
+
+	return val, !ok
+
 }
