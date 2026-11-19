@@ -20,6 +20,7 @@ func main() {
 	log.Printf("TUN interface %s is running", ifce.Name())
 
 	packet := make([]byte, 1500)
+	tracker := internal.NewConntrack()
 
 	var flagsStr string
 
@@ -88,12 +89,23 @@ func main() {
 		}
 
 		srcIPInt := binary.BigEndian.Uint32(srcIP)
+		dstIPInt := binary.BigEndian.Uint32(dstIP)
 
 		if blacklist[srcIPInt] {
 			srcIPNet := net.IPv4(srcIP[0], srcIP[1], srcIP[2], srcIP[3])
 			fmt.Printf("[IP] blocked ip: %s\n", srcIPNet)
 			continue
 		}
+
+		info, exists := tracker.Observe(
+			srcIPInt,
+			dstIPInt,
+			srcPort,
+			dstPort,
+			protocolCode,
+		)
+
+		fmt.Printf("conntrack: packets=%d, existed=%t\n", info.Count, exists)
 
 		fmt.Printf("[%s] src: %d:%d -> dst: %d:%d | flags: %s | ttl: %d | ihl: %d | len: %d\n",
 			protocol, srcIP, srcPort, dstIP, dstPort, flagsStr, ttl, ihl, n)
