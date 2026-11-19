@@ -106,8 +106,10 @@ func main() {
 		)
 
 		fmt.Printf("conntrack: packets=%d, existed=%t\n", info.Count, exists)
+		fmt.Println()
 
 		fmt.Printf("[%s] src: %d:%d -> dst: %d:%d | flags: %s | ttl: %d | ihl: %d | len: %d\n",
 			protocol, srcIP, srcPort, dstIP, dstPort, flagsStr, ttl, ihl, n)
+		fmt.Println()
 	}
 }
