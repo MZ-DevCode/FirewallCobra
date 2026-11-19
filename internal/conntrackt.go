@@ -20,3 +20,9 @@ type Conntrack struct {
 	entries map[ConntrackKey]ConntrackInfo
 	timeout time.Duration
 }
+
+func NewConntrack() *Conntrack {
+	return &Conntrack{
+		entries: make(map[ConntrackKey]ConntrackInfo),
+	}
+}
