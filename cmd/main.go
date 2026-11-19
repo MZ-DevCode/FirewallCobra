@@ -31,10 +31,12 @@ func main() {
 
 	packet := make([]byte, 1500)
 	tracker := internal.NewConntrack()
+	var packetNum int = 0
 
 	var flagsStr string
 
 	for {
+		packetNum++
 		n, err := ifce.Read(packet)
 		if err != nil {
 			log.Printf("Error reading from TUN: %v", err)
@@ -116,7 +118,8 @@ func main() {
 		)
 
 		line := fmt.Sprintf(
-			"[%s] src: %s:%d -> dst: %s:%d | flags: %s | ttl: %d | ihl: %d | len: %d \npackets=%d | existed=%t\n",
+			"#%d | [%s] src: %s:%d -> dst: %s:%d | flags: %s | ttl: %d | ihl: %d | len: %d | packets=%d | existed=%t\n\n",
+			packetNum,
 			protocol,
 			net.IPv4(srcIP[0], srcIP[1], srcIP[2], srcIP[3]),
 			srcPort,
@@ -130,7 +133,7 @@ func main() {
 			exists,
 		)
 
-		fmt.Println(line)
+		fmt.Print(line)
 
 		if _, err = file.WriteString(line); err != nil {
 			log.Printf("Error writing to log file: %v", err)
