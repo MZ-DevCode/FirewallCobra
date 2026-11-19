@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"log"
 	"net"
+	"os"
 )
 
 func main() {
@@ -13,6 +14,15 @@ func main() {
 	if err != nil {
 		log.Fatalf("Error setup TUN: %v", err)
 	}
+
+	var file *os.File
+
+	file, err = os.OpenFile("firewall.log", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
+	if err != nil {
+		log.Printf("Error opening firewall.log: %v\n", err)
+	}
+
+	defer file.Close()
 
 	blacklist := internal.ReadBlacklist("blacklist.txt")
 	log.Print("Loaded nlacklist succesfully")
@@ -105,11 +115,23 @@ func main() {
 			protocolCode,
 		)
 
-		fmt.Printf("conntrack: packets=%d, existed=%t\n", info.Count, exists)
-		fmt.Println()
+		line := fmt.Sprintf(
+			"[%s] src: %s:%d -> dst: %s:%d | flags: %s | ttl: %d | ihl: %d | len: %d \npackets=%d | existed=%t\n",
+			protocol,
+			net.IPv4(srcIP[0], srcIP[1], srcIP[2], srcIP[3]),
+			srcPort,
+			net.IPv4(dstIP[0], dstIP[1], dstIP[2], dstIP[3]),
+			dstPort,
+			flagsStr,
+			ttl,
+			ihl,
+			n,
+			info.Count,
+			exists,
+		)
 
-		fmt.Printf("[%s] src: %d:%d -> dst: %d:%d | flags: %s | ttl: %d | ihl: %d | len: %d\n",
-			protocol, srcIP, srcPort, dstIP, dstPort, flagsStr, ttl, ihl, n)
-		fmt.Println()
+		fmt.Println(line)
+
+		_, err = file.WriteString(line)
 	}
 }
