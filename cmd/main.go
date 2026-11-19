@@ -132,6 +132,8 @@ func main() {
 
 		fmt.Println(line)
 
-		_, err = file.WriteString(line)
+		if _, err = file.WriteString(line); err != nil {
+			log.Printf("Error writing to log file: %v", err)
+		}
 	}
 }
