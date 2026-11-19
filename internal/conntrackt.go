@@ -2,7 +2,7 @@ package internal
 
 import "time"
 
-type ConntracktKey struct {
+type ConntrackKey struct {
 	SrcIP    uint32
 	DstIP    uint32
 	SrcPort  uint16
@@ -10,7 +10,7 @@ type ConntracktKey struct {
 	Protocol byte
 }
 
-type ConntracktInfo struct {
+type ConntrackInfo struct {
 	State     string
 	Timestamp time.Time
 	Count     int
