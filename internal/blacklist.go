@@ -3,7 +3,9 @@ package internal
 import (
 	"bufio"
 	"encoding/binary"
+	"errors"
 	"fmt"
+	"log"
 	"net"
 	"os"
 )
@@ -31,6 +33,12 @@ func ReadBlacklist(filename string) map[uint32]bool {
 		if ipv4 != nil {
 			ipInt := binary.BigEndian.Uint32(ipv4)
 			blacklist[ipInt] = true
+		}
+
+		if err := scanner.Err(); err != nil {
+			if errors.Is(err, os.ErrPermission) {
+				log.Println("No acces to file")
+			}
 		}
 
 	}
