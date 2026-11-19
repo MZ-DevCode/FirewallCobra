@@ -26,3 +26,13 @@ func NewConntrack() *Conntrack {
 		entries: make(map[ConntrackKey]ConntrackInfo),
 	}
 }
+
+func (ct *Conntrack) Observe(SrcIP, DstIP uint32, SrcPort, DstPort uint16, protocol byte) (ConntrackInfo, bool) {
+	key := ConntrackKey{
+		SrcIP:    SrcIP,
+		DstIP:    DstIP,
+		SrcPort:  SrcPort,
+		DstPort:  DstPort,
+		Protocol: protocol,
+	}
+}
