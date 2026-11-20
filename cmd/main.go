@@ -19,7 +19,7 @@ func main() {
 
 	file, err = os.OpenFile("firewall.log", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
 	if err != nil {
-		log.Printf("Error opening firewall.log: %v\n", err)
+		log.Fatalf("Error opening firewall.log: %v\n", err)
 	}
 
 	defer file.Close()
@@ -36,6 +36,7 @@ func main() {
 	var flagsStr string
 
 	for {
+		flagsStr = ""
 		packetNum++
 		n, err := ifce.Read(packet)
 		if err != nil {
@@ -81,16 +82,16 @@ func main() {
 			isRST := (tcpFlags & 0x04) != 0
 
 			if isSYN {
-				flagsStr = "SYN "
+				flagsStr = "SYN"
 			}
 			if isACK {
-				flagsStr = "ACK "
+				flagsStr = "ACK"
 			}
 			if isFIN {
-				flagsStr = "FIN "
+				flagsStr = "FIN"
 			}
 			if isRST {
-				flagsStr = "RST "
+				flagsStr = "RST"
 			}
 
 		case 17:
