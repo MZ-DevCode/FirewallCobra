@@ -21,9 +21,13 @@ type Conntrack struct {
 	timeout time.Duration
 }
 
-func NewConntrack() *Conntrack {
+func NewConntrack( /*timeout time.Duration*/ ) *Conntrack {
+	/*	if timeout <= 0 {
+		timeout = time.Minute * 2
+		}*/
 	return &Conntrack{
 		entries: make(map[ConntrackKey]ConntrackInfo),
+		/* 	timeout: timeout, */
 	}
 }
 
@@ -42,6 +46,7 @@ func (ct *Conntrack) Observe(SrcIP, DstIP uint32, SrcPort, DstPort uint16, proto
 			State: "SEEN",
 		}
 	}
+
 	val.Count++
 	val.Timestamp = time.Now()
 

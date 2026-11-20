@@ -119,7 +119,7 @@ func main() {
 		)
 
 		line := fmt.Sprintf(
-			"#%d | [%s] src: %s:%d -> dst: %s:%d | flags: %s | ttl: %d | ihl: %d | len: %d | packets=%d | existed=%t\n\n",
+			"#%d | [%s] src: %s:%d -> dst: %s:%d | flags: %s | ttl: %d | ihl: %d | len: %d | packets=%d | time: %s | existed=%t\n\n",
 			packetNum,
 			protocol,
 			net.IPv4(srcIP[0], srcIP[1], srcIP[2], srcIP[3]),
@@ -131,6 +131,7 @@ func main() {
 			ihl,
 			n,
 			info.Count,
+			info.Timestamp.Format("15:04:05.000"),
 			exists,
 		)
 
