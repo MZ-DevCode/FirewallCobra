@@ -26,7 +26,7 @@ func main() {
 	defer file.Close()
 
 	blacklist := internal.ReadBlacklist("blacklist.txt")
-	log.Print("Loaded nlacklist succesfully")
+	log.Print("Loaded blacklist succesfully")
 
 	log.Printf("TUN interface %s is running", ifce.Name())
 
@@ -101,6 +101,8 @@ func main() {
 				flagsStr = strings.Join(activeFlags, "+")
 			} else if len(activeFlags) == 0 {
 				flagsStr = "NONE"
+			} else {
+				flagsStr = activeFlags[0]
 			}
 
 		case 17:
