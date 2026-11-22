@@ -7,6 +7,7 @@ import (
 	"log"
 	"net"
 	"os"
+	"strings"
 )
 
 func main() {
@@ -76,22 +77,30 @@ func main() {
 
 			tcpFlags := transportLayer[13]
 
-			isSYN := (tcpFlags & 0x02) != 0
-			isACK := (tcpFlags & 0x10) != 0
-			isFIN := (tcpFlags & 0x01) != 0
-			isRST := (tcpFlags & 0x04) != 0
+			var activeFlags []string
 
-			if isSYN {
-				flagsStr = "SYN"
+			if (tcpFlags & 0x02) != 0 {
+				activeFlags = append(activeFlags, "SYN")
 			}
-			if isACK {
-				flagsStr = "ACK"
+			if (tcpFlags & 0x10) != 0 {
+				activeFlags = append(activeFlags, "ACK")
 			}
-			if isFIN {
-				flagsStr = "FIN"
+			if (tcpFlags & 0x01) != 0 {
+				activeFlags = append(activeFlags, "FIN")
 			}
-			if isRST {
-				flagsStr = "RST"
+			if (tcpFlags & 0x04) != 0 {
+				activeFlags = append(activeFlags, "RST")
+			}
+			if (tcpFlags & 0x08) != 0 {
+				activeFlags = append(activeFlags, "PSH")
+			}
+			if (tcpFlags & 0x20) != 0 {
+				activeFlags = append(activeFlags, "URG")
+			}
+			if len(activeFlags) > 1 {
+				flagsStr = strings.Join(activeFlags, "+")
+			} else if len(activeFlags) == 0 {
+				flagsStr = "NONE"
 			}
 
 		case 17:
